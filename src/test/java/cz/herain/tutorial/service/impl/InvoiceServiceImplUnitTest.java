@@ -3,6 +3,7 @@ package cz.herain.tutorial.service.impl;
 import cz.herain.tutorial.entity.Customer;
 import cz.herain.tutorial.entity.Invoice;
 import cz.herain.tutorial.repository.InvoiceRepository;
+import cz.herain.tutorial.service.TimeService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +35,9 @@ public class InvoiceServiceImplUnitTest {
     @Mock
     private InvoiceRepository invoiceRepositoryMock;
 
+    @Mock
+    private TimeService timeServiceMock;
+
     @Captor
     private ArgumentCaptor<Invoice> invoiceCaptor;
 
@@ -49,6 +53,7 @@ public class InvoiceServiceImplUnitTest {
     @Test
     public void invoiceShouldBeSavedProperly() {
         // mock behaviour
+        doReturn(LocalDate.of(2016, 2, 1)).when(timeServiceMock).getCurrentDate();
         doReturn(null).when(invoiceRepositoryMock).save(invoiceCaptor.capture());
 
         // tested method
@@ -57,7 +62,7 @@ public class InvoiceServiceImplUnitTest {
         // verification
         final Invoice savedInvoice = invoiceCaptor.getValue();
         assertThat(savedInvoice,                notNullValue());
-        assertThat(savedInvoice.getDueDate(),   is(LocalDate.now().plusDays(DUE_INTERVAL_IN_DAYS)));
+        assertThat(savedInvoice.getDueDate(),   is(LocalDate.of(2016, 3, 2)));
         assertThat(savedInvoice.getAmount(),    is(AMOUNT));
         assertThat(savedInvoice.getCustomer(),  is(customer));
     }

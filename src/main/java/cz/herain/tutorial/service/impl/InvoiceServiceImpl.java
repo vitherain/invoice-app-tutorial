@@ -4,6 +4,7 @@ import cz.herain.tutorial.entity.Customer;
 import cz.herain.tutorial.entity.Invoice;
 import cz.herain.tutorial.repository.InvoiceRepository;
 import cz.herain.tutorial.service.InvoiceService;
+import cz.herain.tutorial.service.TimeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Autowired
     private InvoiceRepository invoiceRepository;
 
+    @Autowired
+    private TimeService timeService;
+
     /**
      * {@inheritDoc}
      */
@@ -29,7 +33,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         Assert.notNull(customer, "Customer should not be null!");
         Assert.notNull(amount, "Amount should not be null!");
 
-        final LocalDate now = LocalDate.now();
+        final LocalDate now = timeService.getCurrentDate();
         final LocalDate dueDate = now.plusDays(dueIntervalInDays);
 
         final BigDecimal recountedAmount = this.performComputationThatTakes10Seconds(amount);
